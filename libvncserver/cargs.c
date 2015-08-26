@@ -214,14 +214,13 @@ rfbProcessArguments(rfbScreenInfoPtr rfbScreen,int* argc, char *argv[])
 	    }
             rfbScreen->sslcertfile = argv[++i];
 #endif
-        } 
-        else if (strcmp(argv[i], "-xvp") == 0) { /* -xvp cmd */
+        } else if (strcmp(argv[i], "-xvp") == 0) { /* -xvp cmd */
             if (i + 1 >= *argc) {
         rfbUsage();
         return FALSE;
         }
         rfbScreen->xvpHook = strdup(argv[++i]);
-        else {
+        } else {
 	    rfbProtocolExtension* extension;
 	    int handled=0;
 
