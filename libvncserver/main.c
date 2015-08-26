@@ -1066,7 +1066,7 @@ void rfbInitServer(rfbScreenInfoPtr screen)
 #endif
 
 #ifndef WIN32
-  screen->xvpHook_fh = popen(p, "w");
+  screen->xvpHook_fh = popen(screen->xvpHook, "w");
 
   if (! screen->xvpHook_fh) {
     rfbLog("popen(\"%s\", \"w\") failed.\n", p);
