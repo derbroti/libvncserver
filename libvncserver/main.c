@@ -1066,6 +1066,7 @@ void rfbInitServer(rfbScreenInfoPtr screen)
 #endif
 
 #ifndef WIN32
+  rfbLog("xvp: starting: \"%s\"...\n", screen->xvpHook);
   screen->xvpHook_fh = popen(screen->xvpHook, "w");
 
   if (! screen->xvpHook_fh) {
@@ -1097,6 +1098,11 @@ void rfbShutdownServer(rfbScreenInfoPtr screen, rfbBool disconnectClients) {
     rfbLog("closing xvp stream: %p\n", screen->xvpHook_fh);
     pclose(screen->xvpHook_fh);
     screen->xvpHook_fh = NULL;
+
+    if (screen->xvpHook) {
+      free(screen->xvpHook);
+      screen->xvpHook = NULL;
+    }
   }
 }
 
