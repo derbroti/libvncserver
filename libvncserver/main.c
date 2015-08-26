@@ -1069,7 +1069,7 @@ void rfbInitServer(rfbScreenInfoPtr screen)
   screen->xvpHook_fh = popen(screen->xvpHook, "w");
 
   if (! screen->xvpHook_fh) {
-    rfbLog("popen(\"%s\", \"w\") failed.\n", p);
+    rfbLog("popen(\"%s\", \"w\") failed.\n", screen->xvpHook);
     rfbLogPerror("popen");
     rfbLog("Disabling -xvp mode.\n");
   }
