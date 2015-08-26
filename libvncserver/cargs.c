@@ -56,6 +56,9 @@ rfbUsage(void)
     fprintf(stderr, "-listenv6 ipv6addr     listen for IPv6 connections only on network interface with\n");
     fprintf(stderr, "                       addr ipv6addr. '-listen localhost' and hostname work too.\n");
 #endif
+    fprintf(stderr, "-xvp cmd               This option lets you supply an external command in\n");
+    fprintf(stderr, "                       \"cmd\" that libvncserver will pipe all of the xvp extension\n");
+    fprintf(stderr, "                       events to in a simple format.\n");
 
     for(extension=rfbGetExtensionIterator();extension;extension=extension->next)
 	if(extension->usage)
@@ -211,7 +214,14 @@ rfbProcessArguments(rfbScreenInfoPtr rfbScreen,int* argc, char *argv[])
 	    }
             rfbScreen->sslcertfile = argv[++i];
 #endif
-        } else {
+        } 
+        else if (strcmp(argv[i], "-xvp") == 0) { /* -xvp cmd */
+            if (i + 1 >= *argc) {
+        rfbUsage();
+        return FALSE;
+        }
+        rfbScreen->xvpHook = strdup(argv[++i]);
+        else {
 	    rfbProtocolExtension* extension;
 	    int handled=0;
 

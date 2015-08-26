@@ -1981,6 +1981,13 @@ fail:
     return FALSE;
 }
 
+
+int _xvpHookHelper(struct _rfbClientRec* cl, uint8_t ver, uint8_t code)
+{
+  fprintf(cl->screen->xvpHook_fh, "Xvp %d %d\n", ver, code);
+  fflush(cl->screen->xvpHook_fh);
+}
+
 /*
  * rfbProcessClientNormalMessage is called when the client has sent a normal
  * protocol message.
@@ -2664,7 +2671,8 @@ rfbProcessClientNormalMessage(rfbClientPtr cl)
       }
       else {
 	/* if the hook exists and fails, send a fail msg */
-	if(cl->screen->xvpHook && !cl->screen->xvpHook(cl, msg.xvp.version, msg.xvp.code))
+	//if(cl->screen->xvpHook && !cl->screen->xvpHook(cl, msg.xvp.version, msg.xvp.code))
+    if(cl->screen->xvpHook_fh && !_xvpHookHelper(cl, msg.xvp.version, msg.xvp.code))
 	  rfbSendXvp(cl, 1, rfbXvp_Fail);
       }
       return;

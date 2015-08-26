@@ -930,6 +930,7 @@ rfbScreenInfoPtr rfbGetScreen(int* argc,char** argv,
    screen->displayFinishedHook = NULL;
    screen->getKeyboardLedStateHook = NULL;
    screen->xvpHook = NULL;
+   screen->xvpHook_fh = NULL;
 
    /* initialize client list and iterator mutex */
    rfbClientListInit(screen);
@@ -1063,9 +1064,19 @@ void rfbInitServer(rfbScreenInfoPtr screen)
   if(screen->ignoreSIGPIPE)
     signal(SIGPIPE,SIG_IGN);
 #endif
+
+#ifndef WIN32
+  screen->xvpHook_fh = popen(p, "w");
+
+  if (! screen->xvpHook_fh) {
+    rfbLog("popen(\"%s\", \"w\") failed.\n", p);
+    rfbLogPerror("popen");
+    rfbLog("Disabling -xvp mode.\n");
+  }
+#endif
 }
 
-void rfbShutdownServer(rfbScreenInfoPtr screen,rfbBool disconnectClients) {
+void rfbShutdownServer(rfbScreenInfoPtr screen, rfbBool disconnectClients) {
   if(disconnectClients) {
     rfbClientPtr cl;
     rfbClientIteratorPtr iter = rfbGetClientIterator(screen);
@@ -1081,6 +1092,12 @@ void rfbShutdownServer(rfbScreenInfoPtr screen,rfbBool disconnectClients) {
 
   rfbShutdownSockets(screen);
   rfbHttpShutdownSockets(screen);
+
+  if (screen->xvpHook_fh != NULL) {
+    rfbLog("closing xvp stream: %p\n", screen->xvpHook_fh);
+    pclose(screen->xvpHook_fh);
+    screen->xvpHook_fh = NULL;
+  }
 }
 
 #ifndef LIBVNCSERVER_HAVE_GETTIMEOFDAY
