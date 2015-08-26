@@ -1986,6 +1986,8 @@ int _xvpHookHelper(struct _rfbClientRec* cl, uint8_t ver, uint8_t code)
 {
   fprintf(cl->screen->xvpHook_fh, "Xvp %d %d\n", ver, code);
   fflush(cl->screen->xvpHook_fh);
+
+  return ferror(cl->screen->xvpHook_fh);
 }
 
 /*
