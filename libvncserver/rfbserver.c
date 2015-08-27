@@ -1982,7 +1982,7 @@ fail:
 }
 
 
-rfbBool xvpHookHelper(struct _rfbClientRec* cl, uint8_t ver, uint8_t code)
+rfbBool xvpHookCallback(struct _rfbClientRec* cl, uint8_t ver, uint8_t code)
 {
   rfbBool ret = 1;
 
@@ -2677,39 +2677,38 @@ rfbProcessClientNormalMessage(rfbClientPtr cl)
 
       /* only version when is defined, so echo back a fail */
       if(msg.xvp.version != 1) {
-	rfbSendXvp(cl, msg.xvp.version, rfbXvp_Fail);
+	      rfbSendXvp(cl, msg.xvp.version, rfbXvp_Fail);
       }
       else {
-	/* if the hook fails, send a fail msg */
-    if(! xvpHookHelper(cl, msg.xvp.version, msg.xvp.code))
-	  rfbSendXvp(cl, 1, rfbXvp_Fail);
+	      /* if the hook fails, send a fail msg */
+        if(! xvpHookCallback(cl, msg.xvp.version, msg.xvp.code))
+	        rfbSendXvp(cl, 1, rfbXvp_Fail);
       }
       return;
 
     default:
-	{
-	    rfbExtensionData *e,*next;
+      {
+      rfbExtensionData *e,*next;
 
-	    for(e=cl->extensions; e;) {
-		next = e->next;
-		if(e->extension->handleMessage &&
-			e->extension->handleMessage(cl, e->data, &msg))
+      for(e=cl->extensions; e;) {
+    next = e->next;
+    if(e->extension->handleMessage &&
+      e->extension->handleMessage(cl, e->data, &msg))
                 {
                     rfbStatRecordMessageRcvd(cl, msg.type, 0, 0); /* Extension should handle this */
-		    return;
+        return;
                 }
-		e = next;
-	    }
+    e = next;
+      }
 
-	    rfbLog("rfbProcessClientNormalMessage: unknown message type %d\n",
-		    msg.type);
-	    rfbLog(" ... closing connection\n");
-	    rfbCloseClient(cl);
-	    return;
-	}
+      rfbLog("rfbProcessClientNormalMessage: unknown message type %d\n",
+        msg.type);
+      rfbLog(" ... closing connection\n");
+      rfbCloseClient(cl);
+      return;
+    }
     }
 }
-
 
 
 /*

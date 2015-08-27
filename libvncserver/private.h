@@ -33,7 +33,7 @@ extern void rfbFreeUltraData(rfbClientPtr cl);
 
 /* from rfbserver.c */
 
-rfbBool xvpHookHelper(struct _rfbClientRec* cl, uint8_t, uint8_t);
+rfbBool xvpHookCallback(struct _rfbClientRec* cl, uint8_t, uint8_t);
 
 #endif
 
