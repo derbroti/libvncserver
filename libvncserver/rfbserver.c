@@ -963,7 +963,7 @@ rfbSendSupportedMessages(rfbClientPtr cl)
     rfbSetBit(msgs.server2client, rfbResizeFrameBuffer);
     rfbSetBit(msgs.server2client, rfbPalmVNCReSizeFrameBuffer);
 
-    if (cl->screen->xvpHook) {
+    if (cl->screen->xvpHook || cl->screen->xvpHook_fh) {
         rfbSetBit(msgs.client2server, rfbXvp);
         rfbSetBit(msgs.server2client, rfbXvp);
     }
@@ -2237,7 +2237,7 @@ rfbProcessClientNormalMessage(rfbClientPtr cl)
                 }
                 break;
             case rfbEncodingXvp:
-                if (cl->screen->xvpHook) {
+                if (cl->screen->xvpHook || cl->screen->xvpHook_fh) {
                   rfbLog("Enabling Xvp protocol extension for client "
                           "%s\n", cl->host);
                   if (!rfbSendXvp(cl, 1, rfbXvp_Init)) {
