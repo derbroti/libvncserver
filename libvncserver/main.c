@@ -887,6 +887,10 @@ rfbScreenInfoPtr rfbGetScreen(int* argc,char** argv,
 
    screen->permitFileTransfer = FALSE;
 
+   /* default values */
+   screen->xvpHook = NULL;
+   screen->xvpHook_fh = NULL;
+
    if(!rfbProcessArguments(screen,argc,argv)) {
      free(screen);
      return NULL;
@@ -929,8 +933,6 @@ rfbScreenInfoPtr rfbGetScreen(int* argc,char** argv,
    screen->displayHook = NULL;
    screen->displayFinishedHook = NULL;
    screen->getKeyboardLedStateHook = NULL;
-   screen->xvpHook = NULL;
-   screen->xvpHook_fh = NULL;
 
    /* initialize client list and iterator mutex */
    rfbClientListInit(screen);
