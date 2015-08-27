@@ -219,7 +219,7 @@ rfbProcessArguments(rfbScreenInfoPtr rfbScreen,int* argc, char *argv[])
         rfbUsage();
         return FALSE;
         }
-        rfbScreen->xvpHook = strdup(argv[++i]);
+        rfbScreen->xvpHook_str = strdup(argv[++i]);
         } else {
 	    rfbProtocolExtension* extension;
 	    int handled=0;

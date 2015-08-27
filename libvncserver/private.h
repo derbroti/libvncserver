@@ -5,7 +5,7 @@
 
 void rfbShowCursor(rfbClientPtr cl);
 void rfbHideCursor(rfbClientPtr cl);
-void rfbRedrawAfterHideCursor(rfbClientPtr cl,sraRegionPtr updateRegion);
+void rfbRedrawAfterHideCursor(rfbClientPtr cl, sraRegionPtr updateRegion);
 
 /* from main.c */
 
@@ -30,6 +30,10 @@ void rfbFreeZrleData(rfbClientPtr cl);
 /* from ultra.c */
 
 extern void rfbFreeUltraData(rfbClientPtr cl);
+
+/* from rfbserver.c */
+
+rfbBool xvpHookHelper(struct _rfbClientRec* cl, uint8_t, uint8_t);
 
 #endif
 

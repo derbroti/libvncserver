@@ -1068,11 +1068,11 @@ void rfbInitServer(rfbScreenInfoPtr screen)
 #endif
 
 #ifndef WIN32
-  rfbLog("xvp: starting: \"%s\"...\n", screen->xvpHook);
-  screen->xvpHook_fh = popen(screen->xvpHook, "w");
+  rfbLog("xvp: starting: \"%s\"...\n", screen->xvpHook_str);
+  screen->xvpHook_fh = popen(screen->xvpHook_str, "w");
 
   if (! screen->xvpHook_fh) {
-    rfbLog("popen(\"%s\", \"w\") failed.\n", screen->xvpHook);
+    rfbLog("popen(\"%s\", \"w\") failed.\n", screen->xvpHook_str);
     rfbLogPerror("popen");
     rfbLog("Disabling -xvp mode.\n");
   }
@@ -1101,9 +1101,9 @@ void rfbShutdownServer(rfbScreenInfoPtr screen, rfbBool disconnectClients) {
     pclose(screen->xvpHook_fh);
     screen->xvpHook_fh = NULL;
 
-    if (screen->xvpHook) {
-      free(screen->xvpHook);
-      screen->xvpHook = NULL;
+    if (screen->xvpHook_str) {
+      free(screen->xvpHook_str);
+      screen->xvpHook_str = NULL;
     }
   }
 }

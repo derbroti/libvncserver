@@ -1982,12 +1982,20 @@ fail:
 }
 
 
-int _xvpHookHelper(struct _rfbClientRec* cl, uint8_t ver, uint8_t code)
+rfbBool xvpHookHelper(struct _rfbClientRec* cl, uint8_t ver, uint8_t code)
 {
-  fprintf(cl->screen->xvpHook_fh, "Xvp %d %d\n", ver, code);
-  fflush(cl->screen->xvpHook_fh);
+  rfbBool ret = 1;
 
-  return !(ferror(cl->screen->xvpHook_fh));
+  if (cl->screen->xvpHook_fh) {
+    fprintf(cl->screen->xvpHook_fh, "Xvp %d %d\n", ver, code);
+    fflush(cl->screen->xvpHook_fh);
+    ret = !(ferror(cl->screen->xvpHook_fh));
+  }
+
+  if (cl->screen->xvpHook)
+    ret &= cl->screen->xvpHook(cl, ver, code);
+
+  return ret;
 }
 
 /*
@@ -2672,9 +2680,8 @@ rfbProcessClientNormalMessage(rfbClientPtr cl)
 	rfbSendXvp(cl, msg.xvp.version, rfbXvp_Fail);
       }
       else {
-	/* if the hook exists and fails, send a fail msg */
-	//if(cl->screen->xvpHook && !cl->screen->xvpHook(cl, msg.xvp.version, msg.xvp.code))
-    if(cl->screen->xvpHook_fh && !_xvpHookHelper(cl, msg.xvp.version, msg.xvp.code))
+	/* if the hook fails, send a fail msg */
+    if(! xvpHookHelper(cl, msg.xvp.version, msg.xvp.code))
 	  rfbSendXvp(cl, 1, rfbXvp_Fail);
       }
       return;
