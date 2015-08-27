@@ -889,6 +889,7 @@ rfbScreenInfoPtr rfbGetScreen(int* argc,char** argv,
 
    /* default values */
    screen->xvpHook = NULL;
+   screen->xvpHook_str = NULL;
    screen->xvpHook_fh = NULL;
 
    if(!rfbProcessArguments(screen,argc,argv)) {
